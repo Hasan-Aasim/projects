@@ -4,6 +4,7 @@ import Screen1 from "./App/Screens/Screen1";
 import Screen2 from "./App/Screens/Screen2";
 import Screen3 from "./App/Screens/Screen3";
 import Screen4 from "./App/Screens/Screen4";
+import Record from "./App/Screens/Record";
 
 const App = createSwitchNavigator(
   {
@@ -11,6 +12,7 @@ const App = createSwitchNavigator(
     Screen2: { screen: Screen2 },
     Screen3: { screen: Screen3 },
     Screen4: { screen: Screen4 },
+    Record: { screen: Record },
   },
   {
     initialRouteName: "Screen1",
