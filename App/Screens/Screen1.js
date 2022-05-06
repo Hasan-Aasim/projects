@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { View, StyleSheet, ImageBackground } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -6,7 +6,7 @@ export default function app({ navigation: { navigate } }) {
   return (
     <View style={styles.Container}>
       <ImageBackground
-        source={require("../Assets/pic.png")}
+        source={require("../Assets/pic2.png")}
         style={{ width: "100%", height: "100%" }}
       >
         <View>
