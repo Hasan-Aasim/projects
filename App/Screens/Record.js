@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Button } from "react-native";
 import { Camera } from "expo-camera";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { Video } from "expo-av";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function App({ navigation: { navigate } }) {
   const [hasAudioPermission, setHasAudioPermission] = useState(null);
@@ -26,7 +26,7 @@ export default function App({ navigation: { navigate } }) {
   const takeVideo = async () => {
     if (camera) {
       const data = await camera.recordAsync({
-        maxDuration: 10,
+        maxDuration: 4,
       });
       setRecord(data.uri);
       console.log(data.uri); // most prob the way to send the video to flask Idk?
@@ -55,17 +55,20 @@ export default function App({ navigation: { navigate } }) {
           ratio={"4:3"}
         />
       </View>
+
       <Video
-        ref={video}
-        style={styles.video}
-        source={{
-          uri: record,
-        }}
-        useNativeControls
-        resizeMode="contain"
-        isLooping
-        onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+      // ref={video}
+      // style={styles.video}
+      //source={{
+      // uri: record,
+      //}}
+      //useNativeControls
+      //resizeMode="contain"
+      //isLooping
+      // onPlaybackStatusUpdate={(status) => setStatus(() => status)}
       />
+
+      {/*       
       <View style={styles.buttons}>
         <Button
           title={status.isPlaying ? "Pause" : "Play"}
@@ -85,51 +88,45 @@ export default function App({ navigation: { navigate } }) {
               : Camera.Constants.Type.back
           );
         }}
-      />
+      /> */}
 
-      <Button title="Take Video" onPress={() => takeVideo()} />
-      <Button title="Stop Video" onPress={() => stopVideo()} />
+      <Icon.Button
+        style={styles.buttons}
+        name="record-circle"
+        size={40}
+        color="red"
+        backgroundColor="white"
+        onPress={() => takeVideo()}
+        //onPress={() => stopVideo()}
+      ></Icon.Button>
+
+      <Icon.Button
+        style={styles.buttons}
+        name="record-circle"
+        size={40}
+        color="red"
+        backgroundColor="white"
+        //onPress={() => takeVideo()}
+        onPress={() => stopVideo()}
+      ></Icon.Button>
+
+      {/* const onPress = () => {
+    foo();
+    bar();
+    baz();
+  };
+   */}
+
+      {/* <TouchableHighlight
+ onPress={
+  () => { this.functionOne(); this.functionTwo(); }
+ } */}
+
+      {/* <Button title="Take Video" onPress={() => takeVideo()} />
+      <Button title="Stop Video" onPress={() => stopVideo()} /> */}
     </View>
   );
 }
-
-/*
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-  return (
-    <View style={styles.container}>
-      <Camera style={styles.camera} type={type}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.back
-                  : Camera.Constants.Type.back
-              );
-            }}
-          ></TouchableOpacity>
-
-          <TouchableOpacity
-            style={{ paddingTop: 50 }}
-            onPress={() => navigate("Screen1")}
-          >
-            <Text style={styles.text}>
-              <Icon name="chevron-left" size={20} color="black" />
-              Back
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Camera>
-    </View>
-  );
-}
-*/
 
 const styles = StyleSheet.create({
   container: {
@@ -152,7 +149,7 @@ const styles = StyleSheet.create({
   },
   fixedRatio: {
     flex: 1,
-    aspectRatio: 1,
+    height: "138%",
   },
   video: {
     alignSelf: "center",
