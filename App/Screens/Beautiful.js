@@ -1,46 +1,93 @@
-import VideoRecorder from "react-native-beautiful-video-recorder";
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Camera } from "expo-camera";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import FontAweIcon from "react-native-vector-icons/FontAwesome";
 
-import { StyleSheet, Text, View, TouchableOpacity, Button } from "react-native";
+export default function App({ navigation: { navigate } }) {
+  const [hasAudioPermission, setHasAudioPermission] = useState(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
+  const [camera, setCamera] = useState(null);
+  const [record, setRecord] = useState(null);
+  const [type] = useState(Camera.Constants.Type.back);
+  const video = React.useRef(null);
+  const [status, setStatus] = React.useState({});
 
-start = () => {
-  // 30 seconds
-  this.videoRecorder.open({ maxLength: 30 }, (data) => {
-    console.log("captured data", data);
-  });
-};
+  const [disable, setDisable] = useState(false);
 
-export default class Beautiful extends Component {
-  render() {
-    return (
-      <View style={styles.Container}>
-        <TouchableOpacity onPress={this.start}>
-          <Button title="press" style={styles.buttons}></Button>
-        </TouchableOpacity>
-        <VideoRecorder
-          ref={(ref) => {
-            this.videoRecorder = ref;
-          }}
-        />
-      </View>
-    );
+  useEffect(() => {
+    (async () => {
+      const cameraStatus = await Camera.requestCameraPermissionsAsync();
+      setHasCameraPermission(cameraStatus.status === "granted");
+
+      const audioStatus = await Camera.requestMicrophonePermissionsAsync();
+      setHasAudioPermission(audioStatus.status === "granted");
+    })();
+  }, []);
+
+  const takeVideo = async () => {
+    if (camera) {
+      const data = await camera.recordAsync({
+        maxDuration: 2,
+      });
+      setRecord(data.uri);
+      console.log(data.uri); // most prob the way to send the video to flask Idk?
+      const stopVideo = async () => {
+        camera.stopRecording();
+      };
+    }
+  };
+
+  if (hasCameraPermission === null || hasAudioPermission === null) {
+    return <View />;
   }
+
+  if (hasCameraPermission === false || hasAudioPermission === false) {
+    return <Text> No Access To Camera</Text>;
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={{ paddingTop: 50 }}>
+        <TouchableOpacity>
+          <FontAweIcon
+            name="chevron-left"
+            iconStyle={(alignItems = "center")}
+            size={30}
+            onPress={() => navigate("Screen12")}
+          >
+            <Text style={styles.text}>Back</Text>
+          </FontAweIcon>
+        </TouchableOpacity>
+      </View>
+
+      <View style={{ flex: 1 }}>
+        <View style={styles.cameraContainer}>
+          <Camera
+            ref={(ref) => setCamera(ref)}
+            style={styles.fixedRatio}
+            ratio={"4:3"}
+          />
+        </View>
+      </View>
+
+      <Icon.Button
+        style={styles.buttons}
+        name="record-circle"
+        size={40}
+        color="red"
+        backgroundColor="white"
+        onPress={() => takeVideo()}
+      ></Icon.Button>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  Container: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  camera: {
-    width: 390,
-    height: 820,
-  },
   text: {
     fontWeight: "bold",
-    fontSize: 25,
-    paddingLeft: 15,
+    fontSize: 30,
+    paddingLeft: 18,
   },
   cameraContainer: {
     flex: 1,
@@ -49,15 +96,5 @@ const styles = StyleSheet.create({
   fixedRatio: {
     flex: 1,
     height: "138%",
-  },
-  video: {
-    alignSelf: "center",
-    width: 350,
-    height: 220,
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
   },
 });

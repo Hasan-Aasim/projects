@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, TouchableOpacity, Button } from "react-native";
 import { Camera } from "expo-camera";
 import { Video } from "expo-av";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import FontAweIcon from "react-native-vector-icons/FontAwesome";
+import { Component } from "react";
 
 export default function App({ navigation: { navigate } }) {
   const [hasAudioPermission, setHasAudioPermission] = useState(null);
@@ -54,18 +56,35 @@ export default function App({ navigation: { navigate } }) {
   }
 
   return (
+    //tab bar araha hai isme above camera
     <View style={{ flex: 1 }}>
-      <View style={styles.cameraContainer}>
-        <Camera
-          ref={(ref) => setCamera(ref)}
-          style={styles.fixedRatio}
-          // type={type}
-          ratio={"4:3"}
-        />
+      <View style={{ paddingTop: 50 }}>
+        <TouchableOpacity>
+          <FontAweIcon
+            name="chevron-left"
+            iconStyle={(alignItems = "center")}
+            size={30}
+            onPress={() => navigate("Screen12")}
+          >
+            <Text style={styles.text}>Back</Text>
+          </FontAweIcon>
+        </TouchableOpacity>
       </View>
+
+      <View style={{ flex: 1 }}>
+        <View style={styles.cameraContainer}>
+          <Camera
+            ref={(ref) => setCamera(ref)}
+            style={styles.fixedRatio}
+            // type={type}
+            ratio={"4:3"}
+          />
+        </View>
+      </View>
+
       {/*
       <Video
-        ref={video}
+      ref={video}
         style={styles.video}
         source={{
           uri: record,
@@ -147,8 +166,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: "bold",
-    fontSize: 25,
-    paddingLeft: 15,
+    fontSize: 30,
+    paddingLeft: 18,
   },
   cameraContainer: {
     flex: 1,

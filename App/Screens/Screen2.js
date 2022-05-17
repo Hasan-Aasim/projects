@@ -19,6 +19,7 @@ export default class Screen5 extends Component {
                 );
               }}
             ></TouchableOpacity>
+
             <TouchableOpacity
               style={{ paddingTop: 50 }}
               onPress={() => this.props.navigation.navigate("Screen1")}
