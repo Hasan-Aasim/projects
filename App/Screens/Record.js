@@ -9,9 +9,11 @@ export default function App({ navigation: { navigate } }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [camera, setCamera] = useState(null);
   const [record, setRecord] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [type] = useState(Camera.Constants.Type.back);
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
+
+  const [disable, setDisable] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -26,16 +28,22 @@ export default function App({ navigation: { navigate } }) {
   const takeVideo = async () => {
     if (camera) {
       const data = await camera.recordAsync({
-        maxDuration: 4,
+        maxDuration: 2,
       });
       setRecord(data.uri);
       console.log(data.uri); // most prob the way to send the video to flask Idk?
+      //just testing
+      // remove code if video does not record properly
+      //camera.stopRecording();
+      const stopVideo = async () => {
+        camera.stopRecording();
+      };
     }
   };
 
-  const stopVideo = async () => {
-    camera.stopRecording();
-  };
+  // const stopVideo = async () => {
+  //   camera.stopRecording();
+  // };
 
   if (hasCameraPermission === null || hasAudioPermission === null) {
     return <View />;
@@ -51,24 +59,23 @@ export default function App({ navigation: { navigate } }) {
         <Camera
           ref={(ref) => setCamera(ref)}
           style={styles.fixedRatio}
-          type={type}
+          // type={type}
           ratio={"4:3"}
         />
       </View>
-
+      {/*
       <Video
-      // ref={video}
-      // style={styles.video}
-      //source={{
-      // uri: record,
-      //}}
-      //useNativeControls
-      //resizeMode="contain"
-      //isLooping
-      // onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+        ref={video}
+        style={styles.video}
+        source={{
+          uri: record,
+        }}
+        useNativeControls
+        resizeMode="contain"
+        isLooping
+        //onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+        onPlaybackStatusUpdate={(status) => setStatus(status)}
       />
-
-      {/*       
       <View style={styles.buttons}>
         <Button
           title={status.isPlaying ? "Pause" : "Play"}
@@ -79,6 +86,8 @@ export default function App({ navigation: { navigate } }) {
           }
         />
       </View>
+      
+
       <Button
         title="Flep"
         onPress={() => {
@@ -88,7 +97,15 @@ export default function App({ navigation: { navigate } }) {
               : Camera.Constants.Type.back
           );
         }}
-      /> */}
+      /> 
+      function stateChange(newState) {
+    setTimeout(function () {
+        if (newState == -1) {
+            alert('VIDEO HAS STOPPED');
+        }
+    }, 5000);
+}
+      */}
 
       <Icon.Button
         style={styles.buttons}
@@ -97,9 +114,8 @@ export default function App({ navigation: { navigate } }) {
         color="red"
         backgroundColor="white"
         onPress={() => takeVideo()}
-        //onPress={() => stopVideo()}
       ></Icon.Button>
-
+      {/* 
       <Icon.Button
         style={styles.buttons}
         name="record-circle"
@@ -108,20 +124,11 @@ export default function App({ navigation: { navigate } }) {
         backgroundColor="white"
         //onPress={() => takeVideo()}
         onPress={() => stopVideo()}
-      ></Icon.Button>
-
-      {/* const onPress = () => {
-    foo();
-    bar();
-    baz();
-  };
-   */}
-
+      ></Icon.Button> */}
       {/* <TouchableHighlight
  onPress={
   () => { this.functionOne(); this.functionTwo(); }
  } */}
-
       {/* <Button title="Take Video" onPress={() => takeVideo()} />
       <Button title="Stop Video" onPress={() => stopVideo()} /> */}
     </View>
